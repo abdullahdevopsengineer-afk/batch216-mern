@@ -1,44 +1,45 @@
 services:
-   mongodb:
-      image: mongo:6.0
-      container_name: mongo 
-      ports:
-        - 27017:27017
-      volumes:
-        - mongodb_data:/data/db
-        
-      networks:
-        - mern-net
-   backend:
-      # image: devopsabdullah45/mern-216-backend:v1
-      build:
-        context: ./backend
-        dockerfile: Dockerfile
-      container_name: backend
-      depends_on:
-        - mongodb
-      ports:
-        - 5000:5000
-      networks:
-        - mern-net
-      env_file:
-        - ./backend/.env
-  
-   frontend:
-      # image: devopsabdullah45/mern-216-frontend:v1
-      build:
-        context: ./frontend
-        dockerfile: Dockerfile
-      container_name: frontend
-      depends_on:
-        - backend
-      ports:
-        - 5173:5173
-      networks:
-        - mern-net
+  mongodb:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - mern-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # image: devopsabdullah45/mern-216-backend:v1
+    container_name: backend
+    depends_on:
+      - mongodb
+    ports:
+      - "5000:5000"
+    networks:
+      - mern-net
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    # image: devopsabdullah45/mern-216-frontend:v1
+    container_name: frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    networks:
+      - mern-net
 
 networks:
-    mern-net:
-        driver: bridge
+  mern-net:
+    driver: bridge
+
 volumes:
-    mongodb_data:
+  mongodb_data:
