@@ -36,3 +36,8 @@ jobs:
             fi
 
             echo "Repository downloaded successfully"
+            
+            docker compose down 
+            docker compose up -d --build 
+            echo "docker Deployment done "
+            docker ps 
