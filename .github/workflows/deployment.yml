@@ -67,3 +67,35 @@ jobs:
               docker tag batch216-mern-frontend:latest ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-frontend:latest
               docker push ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-backend:latest
               docker push ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-frontend:latest
+    deploy: 
+        needs: build-to-push
+        runs-on: ubuntu-Latest
+        steps:
+          - name: SSH to EC2 Instance
+            uses: appleboy/ssh-action@v1.2.0
+            with:
+              host: ${{ secrets.EC2_HOST_IP }}
+              username: ${{ secrets.EC2_USER }}
+              key: ${{ secrets.EC2_SSH_KEY }}
+              port: ${{ secrets.EC2_SSH_PORT }}
+              script: |
+               APP_DIR=/home/ubuntu/mern-project/batch216-mern
+               REPO_URL=https://github.com/abdullahdevopsengineer-afk/batch216-mern.git
+
+               if [ -d "$APP_DIR" ]; then
+                echo "Repository exists"
+                cd "$APP_DIR"
+                git pull origin main
+               else
+                echo "Repository not found"
+                mkdir -p /home/ubuntu/mern-project
+                git clone "$REPO_URL" "$APP_DIR"
+               cd "$APP_DIR"
+               fi
+
+                echo "Repository downloaded successfully"
+            
+                docker compose down 
+                docker compose up -d --build 
+                echo "docker Deployment done "
+                docker ps 
