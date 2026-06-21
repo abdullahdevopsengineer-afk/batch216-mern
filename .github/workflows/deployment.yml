@@ -46,6 +46,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 jobs:
     build-to-push:
         runs-on: ubuntu-Latest
@@ -59,14 +60,14 @@ jobs:
               password: ${{ secrets.DOCKERHUB_TOKEN }}
           - name: Build and Push
             run: |
-              docker build -t batch216-mern-backend:latest ./backend
-              docker build -t batch216-mern-frontend:latest ./frontend
+              docker build -t batch216-mern-backend:v1 ./backend
+              docker build -t batch216-mern-frontend:v1 ./frontend
           - name: push to dockerhub
             run: |
-              docker tag batch216-mern-backend:latest ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-backend:latest 
-              docker tag batch216-mern-frontend:latest ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-frontend:latest
-              docker push ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-backend:latest
-              docker push ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-frontend:latest
+              docker tag batch216-mern-backend:v1 ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-backend:v1
+              docker tag batch216-mern-frontend:v1 ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-frontend:v1
+              docker push ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-backend:v1
+              docker push ${{ secrets.DOCKERHUB_USERNAME }}/batch216-mern-frontend:v1
     deploy: 
         needs: build-to-push
         runs-on: ubuntu-Latest
